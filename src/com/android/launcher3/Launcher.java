@@ -155,6 +155,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.core.os.BuildCompat;
 import androidx.window.embedding.RuleController;
 
+import com.android.app.animation.Animations;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
@@ -1041,6 +1042,12 @@ public class Launcher extends StatefulActivity<LauncherState>
                 && !shouldEnableMouseInteractionChanges(mWorkspace.getContext()));
 
         mPrevLauncherState = mStateManager.getCurrentStableState();
+        if (mPrevLauncherState == NORMAL && ALL_APPS.equals(state)) {
+            // Cancel workspace and hotseat animations before entering All Apps so they do not
+            // conflict with the overview/workspace scaling animation.
+            Animations.Companion.cancelOngoingAnimation(getWorkspace());
+            Animations.Companion.cancelOngoingAnimation(getHotseat());
+        }
         if (mPrevLauncherState != state && ALL_APPS.equals(state)
                 // Making sure mAllAppsSessionLogId is null to avoid double logging.
                 && mAllAppsSessionLogId == null) {
