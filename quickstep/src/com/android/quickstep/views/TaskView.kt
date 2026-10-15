@@ -1087,6 +1087,10 @@ constructor(
                 viewModel.bind(type, *taskIds)
             }
 
+            // A freshly inflated TaskView has currentCornerRadius == 0 until the params are
+            // computed once; on phones applyScale() is a no-op, so nothing else does it and the
+            // card would be drawn with square corners. Compute them before binding the containers.
+            updateFullscreenParams(thumbnailFullscreenParams)
             taskContainers.forEach { container ->
                 container.bind()
                 container.taskContentView.apply {

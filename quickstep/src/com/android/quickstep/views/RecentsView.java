@@ -5782,13 +5782,16 @@ public abstract class RecentsView<
                         taskView.getPrimaryDismissTranslationProperty().get(taskView));
             }
             int scrollDelta = Math.abs(curScroll - childPosition);
-            if (scrollDelta > scaleArea) {
-                child.setScaleX(mScrollScale);
-                child.setScaleY(mScrollScale);
-            } else {
-                float scale = mapToRange(scrollDelta, 0, scaleArea, 1f, mScrollScale, LINEAR);
-                child.setScaleX(scale);
-                child.setScaleY(scale);
+            float oldScale = child.getScaleX();
+            float newScale = scrollDelta > scaleArea
+                    ? mScrollScale
+                    : mapToRange(scrollDelta, 0, scaleArea, 1f, mScrollScale, LINEAR);
+            if (oldScale != newScale) {
+                child.setScaleX(newScale);
+                child.setScaleY(newScale);
+            }
+            if (child instanceof TaskView) {
+                ((TaskView) child).updateFullscreenParams();
             }
             if (!(child instanceof TaskView && mRemoteTargetHandles != null)) continue;
             TaskView tv = (TaskView) child;
