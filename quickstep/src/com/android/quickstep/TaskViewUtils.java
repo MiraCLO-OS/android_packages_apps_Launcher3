@@ -297,6 +297,20 @@ public final class TaskViewUtils {
 
                     taskView.getThumbnailBounds(TEMP_THUMBNAIL_BOUNDS, /*relativeToDragLayer=*/
                             true);
+                    // The bounds include the scroll scale of side cards, but the simulator
+                    // reaches fullscreen from the unscaled rect (scrollScale -> 1 with
+                    // fullScreenProgress), so undo it or the pivot lands the window off-center.
+                    float startScrollScale = tvsLocal.scrollScale.value;
+                    if (startScrollScale > 0f && startScrollScale != 1f) {
+                        float inv = 1f / startScrollScale;
+                        float cx = TEMP_THUMBNAIL_BOUNDS.exactCenterX();
+                        float cy = TEMP_THUMBNAIL_BOUNDS.exactCenterY();
+                        TEMP_THUMBNAIL_BOUNDS.set(
+                                Math.round(cx - (cx - TEMP_THUMBNAIL_BOUNDS.left) * inv),
+                                Math.round(cy - (cy - TEMP_THUMBNAIL_BOUNDS.top) * inv),
+                                Math.round(cx + (TEMP_THUMBNAIL_BOUNDS.right - cx) * inv),
+                                Math.round(cy + (TEMP_THUMBNAIL_BOUNDS.bottom - cy) * inv));
+                    }
                     getTaskDimension(container.getDeviceProfile(),
                             TEMP_TASK_DIMENSION);
                     TEMP_FULLSCREEN_BOUNDS.set(0, 0, (int) TEMP_TASK_DIMENSION.x,
@@ -864,6 +878,10 @@ public final class TaskViewUtils {
 
             tvsLocal.fullScreenProgress.value = 0;
             tvsLocal.recentsViewScale.value = 1;
+            // Resolve scale from this handle's target task. A launch may have multiple remote
+            // handles (for example split-screen); applying the launching TaskView scale to every
+            // simulator can start another target with the wrong transform.
+            tvsLocal.scrollScale.value = recentsView.getScrollScale(handle);
             tvsLocal.recentsViewScroll.value = scrollOffset;
             tvsLocal.taskSecondaryTranslation.value = gridTranslationY;
 
