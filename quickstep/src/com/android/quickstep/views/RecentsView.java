@@ -5789,9 +5789,9 @@ public abstract class RecentsView<
             if (oldScale != newScale) {
                 child.setScaleX(newScale);
                 child.setScaleY(newScale);
-            }
-            if (child instanceof TaskView) {
-                ((TaskView) child).updateFullscreenParams();
+                if (child instanceof TaskView) {
+                    ((TaskView) child).updateFullscreenParams();
+                }
             }
             if (!(child instanceof TaskView && mRemoteTargetHandles != null)) continue;
             TaskView tv = (TaskView) child;

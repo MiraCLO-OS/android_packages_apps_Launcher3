@@ -1838,7 +1838,9 @@ constructor(
     }
 
     protected fun updateFullscreenParams(fullscreenParams: FullscreenDrawParams) {
-        recentsView?.let { fullscreenParams.setProgress(fullscreenProgress, it.scaleX, scaleX) }
+        // TaskView can be bound before it is attached to RecentsView. In that case the parent
+        // scale is still the default 1f, and we must still initialize the corner radius.
+        fullscreenParams.setProgress(fullscreenProgress, recentsView?.scaleX ?: 1f, scaleX)
     }
 
     private fun onModalnessUpdated(modalness: Float) {
