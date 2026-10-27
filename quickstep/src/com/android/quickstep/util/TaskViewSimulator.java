@@ -104,6 +104,11 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     public final AnimatedFloat taskGridTranslationY = new AnimatedFloat();
 
     public final AnimatedFloat scrollScale = new AnimatedFloat();
+    /**
+     * MiraCLO: the card's shift into the ColorOS-style stack (primary axis, px). Fades out with
+     * fullScreenProgress, like scrollScale, so the app lands exactly fullscreen.
+     */
+    public final AnimatedFloat miracloStackTranslation = new AnimatedFloat();
 
     // Carousel properties
     public final AnimatedFloat carouselScale = new AnimatedFloat();
@@ -494,7 +499,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mMatrix.postScale(scrollScale, scrollScale, mTaskRect.left + (mTaskRect.width() / 2),
                 mTaskRect.top + (mTaskRect.height() / 2));
         mOrientationState.getOrientationHandler().setPrimary(mMatrix, MATRIX_POST_TRANSLATE,
-                taskPrimaryTranslation.value);
+                taskPrimaryTranslation.value
+                        + miracloStackTranslation.value * (1f - fullScreenProgress));
         mOrientationState.getOrientationHandler().setSecondary(mMatrix, MATRIX_POST_TRANSLATE,
                 taskSecondaryTranslation.value);
         mMatrix.postTranslate(taskGridTranslationX.value, taskGridTranslationY.value);

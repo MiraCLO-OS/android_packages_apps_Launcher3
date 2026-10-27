@@ -459,6 +459,7 @@ constructor(
                 ObjectAnimator.ofFloat(iconArrowView, SCALE_Y, -1f),
             )
             status = AppChipStatus.Expanded
+            if (miracloStackedHeader) applyMiraCLOHeaderLook()
         } else {
             // Clip expanded text with reveal animation so it doesn't go beyond the edge of the menu
             val expandedTextClipAnim =
@@ -489,6 +490,7 @@ constructor(
             )
             status = AppChipStatus.Collapsed
             sendToBack()
+            if (miracloStackedHeader) applyMiraCLOHeaderLook()
         }
 
         animator!!.interpolator = Interpolators.EMPHASIZED
@@ -640,6 +642,74 @@ constructor(
         setDrawable(null)
     }
 
+    // MiraCLO: ColorOS-style recents header -------------------------------------------------
+
+    private var miracloStackedHeader = false
+    private var miracloStockBackground: Drawable? = null
+    private var miracloStockTitleColors: android.content.res.ColorStateList? = null
+
+    /**
+     * MiraCLO: in the ColorOS recents style the app icon and name sit above the card, larger and
+     * without the chip background, like ColorOS. Tapping them still opens the same app menu; while
+     * the menu is open the stock chip look is used. Calls that do not change the state are ignored.
+     */
+    fun setMiraCLOStackedHeader(enabled: Boolean) {
+        if (miracloStackedHeader == enabled) return
+        miracloStackedHeader = enabled
+        applyMiraCLOHeaderLook()
+    }
+
+    /** Scale around the chip's start/bottom corner so the header grows up and away from it. */
+    private fun updateMiraCLOHeaderPivot() {
+        val collapsed = getCollapsedBackgroundLtrBounds()
+        pivotX = if (isLayoutRtl) (width - collapsed.left).toFloat() else collapsed.left.toFloat()
+        pivotY = collapsed.bottom.toFloat()
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        if (miracloStackedHeader) updateMiraCLOHeaderPivot()
+    }
+
+    private fun applyMiraCLOHeaderLook() {
+        val title = appTitle ?: return
+        if (miracloStockTitleColors == null) {
+            miracloStockBackground = background
+            miracloStockTitleColors = title.textColors
+        }
+        val headerLook = miracloStackedHeader && status == AppChipStatus.Collapsed
+
+        // Look: no pill, no arrow, white name with a soft shadow.
+        background = if (headerLook) null else miracloStockBackground
+        elevation = if (headerLook) 0f else iconMenuElevation
+        // No outline shadow either: there is no pill to cast it.
+        if (headerLook) translationZ = 0f
+        iconArrowView?.alpha = if (headerLook) 0f else 1f
+        if (headerLook) {
+            title.setTextColor(android.graphics.Color.WHITE)
+            title.setShadowLayer(6f, 0f, 1f, 0x66000000)
+        } else {
+            miracloStockTitleColors?.let { title.setTextColor(it) }
+            title.setShadowLayer(0f, 0f, 0f, 0)
+        }
+
+        // Position: enlarged around the chip's start/bottom corner, then lifted above the card.
+        if (miracloStackedHeader) {
+            val collapsed = getCollapsedBackgroundLtrBounds()
+            updateMiraCLOHeaderPivot()
+            scaleX = MIRACLO_HEADER_SCALE
+            scaleY = MIRACLO_HEADER_SCALE
+            val gap = MIRACLO_HEADER_GAP_DP * resources.displayMetrics.density
+            viewTranslationY[INDEX_MIRACLO_TRANSLATION].value =
+                -(iconMenuMarginTopStart + collapsed.bottom + gap)
+        } else {
+            scaleX = 1f
+            scaleY = 1f
+            viewTranslationY[INDEX_MIRACLO_TRANSLATION].value = 0f
+        }
+        invalidateOutline()
+    }
+
     enum class AppChipStatus {
         Expanded,
         Collapsed,
@@ -671,6 +741,11 @@ constructor(
 
         private const val INDEX_SPLIT_TRANSLATION = 0
         private const val INDEX_MENU_TRANSLATION = 1
-        private const val INDEX_COUNT_TRANSLATION = 2
+        private const val INDEX_MIRACLO_TRANSLATION = 2
+        private const val INDEX_COUNT_TRANSLATION = 3
+
+        /** MiraCLO: ColorOS-style header: icon and name enlarged above the card. */
+        private const val MIRACLO_HEADER_SCALE = 1.4f
+        private const val MIRACLO_HEADER_GAP_DP = 10f
     }
 }

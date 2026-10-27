@@ -882,6 +882,9 @@ public final class TaskViewUtils {
             // handles (for example split-screen); applying the launching TaskView scale to every
             // simulator can start another target with the wrong transform.
             tvsLocal.scrollScale.value = recentsView.getScrollScale(handle);
+            // MiraCLO: start from the card's place in the ColorOS-style stack.
+            tvsLocal.miracloStackTranslation.value =
+                    recentsView.getMiraCLOStackTranslation(handle);
             tvsLocal.recentsViewScroll.value = scrollOffset;
             tvsLocal.taskSecondaryTranslation.value = gridTranslationY;
 

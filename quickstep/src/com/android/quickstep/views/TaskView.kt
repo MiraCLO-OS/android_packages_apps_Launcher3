@@ -414,6 +414,25 @@ constructor(
             applyTranslationX()
         }
 
+    /**
+     * MiraCLO: horizontal shift that tucks older tasks into the ColorOS-style stack. Set by
+     * [RecentsView] on every scroll frame; always 0 in the default recents style.
+     */
+    var miraCLOStackTranslationX = 0f
+        set(value) {
+            if (field == value) return
+            field = value
+            applyTranslationX()
+        }
+
+    /**
+     * MiraCLO: switches the app chips between the stock chip and the ColorOS-style header. Cheap
+     * to call every frame: each chip ignores calls that do not change its state.
+     */
+    fun setMiraCLOStackedHeader(enabled: Boolean) {
+        taskContainers.forEach { it.iconView.setMiraCLOStackedHeader(enabled) }
+    }
+
     private var taskOffsetTranslationY = 0f
         set(value) {
             field = value
@@ -1799,7 +1818,8 @@ constructor(
                 splitSelectTranslationX +
                 gridEndTranslationX +
                 persistentTranslationX +
-                animateToIconTranslationX
+                animateToIconTranslationX +
+                miraCLOStackTranslationX
     }
 
     private fun applyTranslationY() {
@@ -1879,6 +1899,7 @@ constructor(
         // resetViewTransforms is called during QuickSwitch scrolling.
         taskOffsetTranslationX = 0f
         taskResistanceTranslationX = 0f
+        miraCLOStackTranslationX = 0f
         splitSelectTranslationX = 0f
         gridEndTranslationX = 0f
         taskOffsetTranslationY = 0f

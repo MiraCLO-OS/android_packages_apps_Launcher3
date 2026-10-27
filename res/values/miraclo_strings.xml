@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: MiraCLO
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources>
+    <!-- Home settings > Recents: layout of the recent apps screen -->
+    <string name="miraclo_recents_style_title">Recents style</string>
+    <string name="miraclo_recents_style_default">Default</string>
+    <string name="miraclo_recents_style_coloros">ColorOS</string>
+
+    <string-array name="miraclo_recents_style_entries" translatable="false">
+        <item>@string/miraclo_recents_style_default</item>
+        <item>@string/miraclo_recents_style_coloros</item>
+    </string-array>
+
+    <!-- Read by MiraCLORecentsStyle (quickstep) -->
+    <string-array name="miraclo_recents_style_values" translatable="false">
+        <item>default</item>
+        <item>coloros</item>
+    </string-array>
+</resources>

@@ -117,6 +117,16 @@
         android:key="recents_category"
         android:title="@string/category_recents">
 
+        <!-- MiraCLO: Default | ColorOS (stacked) recents layout -->
+        <ListPreference
+            android:key="pref_recents_style"
+            android:title="@string/miraclo_recents_style_title"
+            android:entries="@array/miraclo_recents_style_entries"
+            android:entryValues="@array/miraclo_recents_style_values"
+            android:defaultValue="default"
+            android:persistent="true"
+            launcher:useSimpleSummaryProvider="true" />
+
         <SwitchPreferenceCompat
             android:key="pref_recents_screenshot"
             android:title="@string/recents_screenshot_title"
