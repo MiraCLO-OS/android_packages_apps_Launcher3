@@ -425,14 +425,6 @@ constructor(
             applyTranslationX()
         }
 
-    /**
-     * MiraCLO: switches the app chips between the stock chip and the ColorOS-style header. Cheap
-     * to call every frame: each chip ignores calls that do not change its state.
-     */
-    fun setMiraCLOStackedHeader(enabled: Boolean) {
-        taskContainers.forEach { it.iconView.setMiraCLOStackedHeader(enabled) }
-    }
-
     private var taskOffsetTranslationY = 0f
         set(value) {
             field = value

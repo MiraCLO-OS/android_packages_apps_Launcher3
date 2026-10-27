@@ -5848,7 +5848,6 @@ public abstract class RecentsView<
                     }
                 }
                 taskView.setMiraCLOStackTranslationX(stackTranslation);
-                taskView.setMiraCLOStackedHeader(stacked);
             }
             if (oldScale != newScale) {
                 child.setScaleX(newScale);
