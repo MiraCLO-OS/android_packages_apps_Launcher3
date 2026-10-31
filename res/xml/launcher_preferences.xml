@@ -169,6 +169,27 @@
             android:persistent="false"
             android:widgetLayout="@layout/notification_pref_warning" />
 
+        <SwitchPreferenceCompat
+            android:key="pref_icon_pack_same"
+            android:title="@string/miraclo_icon_pack_same_title"
+            android:summary="@string/miraclo_icon_pack_same_summary"
+            android:disableDependentsState="true"
+            android:defaultValue="true"
+            android:persistent="true" />
+
+        <com.android.launcher3.settings.MiraCLOIconPackPreference
+            android:key="pref_icon_pack_home"
+            android:title="@string/miraclo_icon_pack_home_title"
+            android:dialogTitle="@string/miraclo_icon_pack_home_title"
+            android:persistent="true" />
+
+        <com.android.launcher3.settings.MiraCLOIconPackPreference
+            android:key="pref_icon_pack_drawer"
+            android:title="@string/miraclo_icon_pack_drawer_title"
+            android:dialogTitle="@string/miraclo_icon_pack_drawer_title"
+            android:dependency="pref_icon_pack_same"
+            android:persistent="true" />
+
         <co.aospa.framework.preference.CustomSeekBarPreference
             android:key="pref_icon_size"
             android:title="@string/icon_size_title"

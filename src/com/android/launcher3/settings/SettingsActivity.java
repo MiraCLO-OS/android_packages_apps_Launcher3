@@ -149,6 +149,11 @@ public class SettingsActivity extends CollapsingToolbarBaseActivity
         } else if (Utilities.KEY_ALLAPPS_SUGGESTIONS.equals(key)
                 || Utilities.KEY_HOTSEAT_SUGGESTIONS.equals(key)) {
             LauncherAppState.getInstance(this).getModel().forceReload("app_suggestions_changed");
+        } else if (com.android.launcher3.icons.MiraCLOIconPacks.KEY_SAME.equals(key)
+                || com.android.launcher3.icons.MiraCLOIconPacks.KEY_HOME.equals(key)
+                || com.android.launcher3.icons.MiraCLOIconPacks.KEY_DRAWER.equals(key)) {
+            com.android.launcher3.icons.MiraCLOIconPacks.clear();
+            LauncherAppState.getInstance(this).getModel().forceReload("icon_pack_changed");
         }
     }
 
